@@ -1,9 +1,10 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 
-plt.rcParams['font.family'] = 'MS Gothic'
-plt.rcParams['axes.unicode_minus'] = False
+matplotlib.rcParams['font.family'] = 'MS Gothic'
+matplotlib.rcParams['axes.unicode_minus'] = False
 
 N = 5000
 inflation = 0.02
