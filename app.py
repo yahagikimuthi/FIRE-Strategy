@@ -1,15 +1,6 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import requests
-
-url = "https://github.com/google/fonts/raw/main/ofl/ipaexgothic/ipaexg.ttf"
-font_path = "/tmp/ipaexg.ttf"
-with open(font_path, "wb") as f:
-    f.write(requests.get(url).content)
-
-ipaex = fm.FontProperties(fname=font_path)
-plt.rcParams["font.family"] = ipaex.get_name()
 
 N = 5000
 inflation = 0.02
@@ -152,6 +143,7 @@ if select_fund != "選択しない" and select_fund != st.session_state.prev_fun
     st.session_state.prev_fund = select_fund
     st.rerun()
 
+st.markdown("---")
 if st.button("シミュレーション開始"):
 
     if fst_asset == 0:
@@ -160,7 +152,6 @@ if st.button("シミュレーション開始"):
         st.warning("取り崩し期間が0年です!")
 
     else:
-        st.markdown("---")
         prices = generate_prices(year, mu/100.0, sigma/100.0)
         if option1=="定額法":
             asset, total_withdraw = fixed_amount_method(prices, fst_asset, w)
@@ -177,10 +168,10 @@ if st.button("シミュレーション開始"):
 
         failure_rate = failure_rate_transition[-1]
         fig, ax = plt.subplots()
-        ax.plot(failure_rate_transition * np.full_like(failure_rate_transition, 100.0), label="失敗率", color="red")
-        ax.set_title("失敗率推移")
-        ax.set_xlabel("年数")
-        ax.set_ylabel("確率[%]")
+        ax.plot(failure_rate_transition * np.full_like(failure_rate_transition, 100.0), label="failure rate", color="red")
+        ax.set_title("failure rate transition")
+        ax.set_xlabel("years")
+        ax.set_ylabel("probability[%]")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
@@ -191,13 +182,13 @@ if st.button("シミュレーション開始"):
         fig, ax = plt.subplots()
         fst_asset_annual = np.full(year + 1, fst_asset) / ((1 + inflation)**np.arange(0, year + 1))
         ax.fill_between(np.arange(year + 1), fst_asset_annual, np.zeros(year + 1), label="初期資産", color="gray")
-        ax.plot(p_asset[:, 2], label="成績が上位25%", color="red")
-        ax.plot(p_asset[:, 1], label="想定成績", color="green")
-        ax.plot(p_asset[:, 0], label="成績が下位25%", color="blue")
+        ax.plot(p_asset[:, 2], label="upper 25%", color="red")
+        ax.plot(p_asset[:, 1], label="midium", color="green")
+        ax.plot(p_asset[:, 0], label="lower25%", color="blue")
 
-        ax.set_title("インフレ調整付き資産額推移")
-        ax.set_xlabel("年数")
-        ax.set_ylabel("資産額[万円]")
+        ax.set_title("Inflation-adjusted asset transition")
+        ax.set_xlabel("years")
+        ax.set_ylabel("asset(10,000 times)")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
