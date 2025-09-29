@@ -1,10 +1,15 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
+import requests
 
-rcParams['font.family'] = 'MS Gothic'
-rcParams['axes.unicode_minus'] = False
+url = "https://github.com/google/fonts/raw/main/ofl/ipaexgothic/ipaexg.ttf"
+font_path = "/tmp/ipaexg.ttf"
+with open(font_path, "wb") as f:
+    f.write(requests.get(url).content)
+
+ipaex = fm.FontProperties(fname=font_path)
+plt.rcParams["font.family"] = ipaex.get_name()
 
 N = 5000
 inflation = 0.02
