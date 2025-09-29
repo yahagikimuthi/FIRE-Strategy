@@ -181,7 +181,7 @@ if st.button("シミュレーション開始"):
 
         fig, ax = plt.subplots()
         fst_asset_annual = np.full(year + 1, fst_asset) / ((1 + inflation)**np.arange(0, year + 1))
-        ax.fill_between(np.arange(year + 1), fst_asset_annual, np.zeros(year + 1), label="初期資産", color="gray")
+        ax.fill_between(np.arange(year + 1), fst_asset_annual, np.zeros(year + 1), label="first asset", color="gray")
         ax.plot(p_asset[:, 2], label="upper 25%", color="red")
         ax.plot(p_asset[:, 1], label="midium", color="green")
         ax.plot(p_asset[:, 0], label="lower25%", color="blue")
