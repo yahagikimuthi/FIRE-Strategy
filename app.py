@@ -6,7 +6,7 @@ N = 5000
 inflation = 0.02
 
 def generate_prices(year, mu, sigma, n_sim=N, steps_per_year=252):
-    np.random.seed(42)
+    np.random.seed(420)
     
     t = steps_per_year
     delta = 1/t
