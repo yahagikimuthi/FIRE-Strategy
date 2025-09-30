@@ -46,7 +46,7 @@ def fixed_amount_method(prices, first_asset, fixed_amount, inflation=inflation):
         w = np.minimum(asset[:, t], fixed_amount_annual[t])
         unit -= w / prices[:, t]
 
-        withdraw[:, t] = w / ((1 + inflation)**t
+        withdraw[:, t] = w / ((1 + inflation)**t)
 
     return asset, withdraw
 
@@ -69,7 +69,7 @@ def fixed_rate_method(prices, first_asset, withdraw_rate, live_expense, inflatio
         final_withdraw = np.minimum(asset[:, t], w)
         unit -= final_withdraw / prices[:, t]
         
-        withdraw[:, t] = final_withdraw / (1 + inflation)**t
+        withdraw[:, t] = final_withdraw / ((1 + inflation)**t)
 
     return asset, withdraw
 
