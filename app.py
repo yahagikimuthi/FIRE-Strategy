@@ -15,7 +15,7 @@ def generate_prices(year, mu, sigma, n_sim=N, steps_per_year=252):
 
     Z = np.random.randn(n_sim, 120)
     for n in range(1, days + 1):
-        prices[:, n] = prices[:, n-1] * ((1 + mu)**delta) * np.exp(sigma * np.sqrt(delta) * Z[:, t-1])
+        prices[:, n] = prices[:, n-1] * ((1 + mu)**delta) * np.exp(sigma * np.sqrt(delta) * Z[:, n-1])
     
     return prices[:, ::t]
 
