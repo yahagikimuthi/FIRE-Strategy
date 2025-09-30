@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 N = 5000
 inflation = 0.02
-Z = np.random.randn(n_sim, days)
+Z = np.random.randn(n_sim, 120*252)
 np.save("rand", Z)
 
 def generate_prices(year, mu, sigma, n_sim=N, steps_per_year=252):
