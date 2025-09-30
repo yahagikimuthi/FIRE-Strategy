@@ -40,11 +40,10 @@ def fixed_amount_method(prices, first_asset, fixed_amount, inflation=inflation):
     for t in range(1, year + 1):
 
         asset[:, t] = np.maximum(0.0, unit * prices[:, t])
-<<<<<<< HEAD
+
         withdraw[:, t] = np.minimum(asset[:, t], fixed_amount_annual[t])
-=======
+
         withdraw[:, t] = np.minimum(asset[:, t], fixed_amount_annual[t]) / (1 + inflation)**t
->>>>>>> e4921c3fb0b60b2d8ccef773193fe29fcec26c6b
         unit -= withdraw[:, t] / prices[:, t]
 
     return asset, withdraw
