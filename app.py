@@ -200,7 +200,7 @@ if st.button("シミュレーション開始"):
             annual = np.full(year, w)
             ax.fill_between(np.arange(1, year + 1), annual, np.zeros(year), label="fixed amount", color="gray")
         else:
-            annual = np.fill(year, min_live_expense)
+            annual = np.full(year, min_live_expense)
             ax.fill_between(np.arange(1, year + 1), annual, np.zeros(year), label="minimum living expense", color="gray")
         ax.plot(p_withdraw[:, 2], label="upper 25%", color="red")
         ax.plot(p_withdraw[:, 1], label="median", color="green")
