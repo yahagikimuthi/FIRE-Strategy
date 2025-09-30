@@ -67,8 +67,8 @@ def fixed_rate_method(prices, first_asset, withdraw_rate, live_expense, inflatio
     for t in range(1, year + 1):
 
         asset[:, t] = np.maximum(0.0, unit * prices[:, t])
-        withdraw = np.maximum(live_expense_annual[t, 0], np.minimum(live_expense_annual[t, 1], asset[:, t] * withdraw_rate))
-        final_withdraw = np.minimum(asset[:, t], withdraw)
+        w = np.maximum(live_expense_annual[t, 0], np.minimum(live_expense_annual[t, 1], asset[:, t] * withdraw_rate))
+        final_withdraw = np.minimum(asset[:, t], w)
         unit -= final_withdraw / prices[:, t]
         
         withdraw[:, t] = final_withdraw / (1 + inflation)**t
@@ -197,10 +197,10 @@ if st.button("シミュレーション開始"):
 
         fig, ax = plt.subplots()
         if option1 == "定額法":
-            annual = np.full(year, w) * ((1 + inflation)**np.arange(1, year + 1))
+            annual = np.full(year, w)
             ax.fill_between(np.arange(1, year + 1), annual, np.zeros(year), label="fixed amount", color="gray")
         else:
-            annual = np.fill(year, min_live_expense) * ((1 + inflation)**np.arange(1, year + 1))
+            annual = np.fill(year, min_live_expense)
             ax.fill_between(np.arange(1, year + 1), annual, np.zeros(year), label="minimum living expense", color="gray")
         ax.plot(p_withdraw[:, 2], label="upper 25%", color="red")
         ax.plot(p_withdraw[:, 1], label="median", color="green")
