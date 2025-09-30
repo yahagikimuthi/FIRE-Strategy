@@ -188,7 +188,7 @@ if st.button("シミュレーション開始"):
 
         ax.set_title("asset transition (inflation adjusted)")
         ax.set_xlabel("years")
-        ax.set_ylabel("asset (10,000 times)")
+        ax.set_ylabel("asset[10K]")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
@@ -198,14 +198,14 @@ if st.button("シミュレーション開始"):
             annual = np.full(year, w)
             ax.fill_between(np.arange(year), annual, np.zeros(year), label="fixed amount", color="gray")
         else:
-            annual = np.full(year + 1, min_live_expense)
+            annual = np.full(year, min_live_expense)
             ax.fill_between(np.arange(year), annual, np.zeros(year), label="minimum living expense", color="gray")
         ax.plot(p_withdraw[:, 2], label="upper 25%", color="red")
         ax.plot(p_withdraw[:, 1], label="median", color="green")
         ax.plot(p_withdraw[:, 0], label="lower 25%", color="blue")
 
         ax.set_title("withdraw amount transition (inflation adjusted)")
-        ax.set_ylabel("withdraw amount (10,000 times)")
+        ax.set_ylabel("withdraw amount[10K]")
         ax.set_xlabel("years")
         ax.legend()
         ax.grid(True)
