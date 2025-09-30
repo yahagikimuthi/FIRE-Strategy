@@ -35,15 +35,15 @@ def fixed_amount_method(prices, first_asset, fixed_amount, inflation=inflation):
     unit = first_asset / prices[:, 0] #(n_sim)
 
     fixed_amount_annual = fixed_amount * ((1 + inflation) ** np.arange(0, year + 1))
-    total_withdraw = np.zeros(n_sim, dtype=np.float32)
+    withdraw = np.zeros((n_sim, year + 1), dtype=np.float32)
 
     for t in range(1, year + 1):
 
         asset[:, t] = np.maximum(0.0, unit * prices[:, t])
-        withdraw = np.minimum(asset[:, t], fixed_amount_annual[t])
+        withdraw[:, t] = np.minimum(asset[:, t], fixed_amount_annual[t]) / (1 + inflation)**t
         unit -= withdraw / prices[:, t]
 
-    return asset, total_withdraw
+    return asset, withdraw
 
 def fixed_rate_method(prices, first_asset, withdraw_rate, live_expense, inflation=inflation):
 
@@ -59,7 +59,7 @@ def fixed_rate_method(prices, first_asset, withdraw_rate, live_expense, inflatio
     unit = first_asset / prices[:, 0] #(n_sim)
 
     live_expense_annual = live_expense[None, :] * ((1 + inflation) ** np.arange(0, year + 1)[:, None]) #(year + 1, 2)
-    total_withdraw = np.zeros(n_sim, dtype=np.float32)
+    withdraw = np.zeros((n_sim, year + 1), dtype=np.float32)
 
     for t in range(1, year + 1):
 
@@ -68,11 +68,11 @@ def fixed_rate_method(prices, first_asset, withdraw_rate, live_expense, inflatio
         final_withdraw = np.minimum(asset[:, t], withdraw)
         unit -= final_withdraw / prices[:, t]
         
-        total_withdraw += final_withdraw / (1 + inflation)**t
+        withdraw[:, t] = final_withdraw / (1 + inflation)**t
 
-    return asset, total_withdraw
+    return asset, withdraw
 
-def calc_statistics(asset, total_withdraw, inflation=inflation):
+def calc_statistics(asset, withdraw, inflation=inflation):
     
     n_sim = asset.shape[0]
     year = asset.shape[1] - 1
@@ -92,10 +92,9 @@ def calc_statistics(asset, total_withdraw, inflation=inflation):
 
     percentile = [25, 50, 75]
     p_asset = np.array([np.percentile(asset[:, t], percentile) / ((1 + inflation)**t) for t in range(year + 1)]) #(year + 1)
+    p_withdraw = np.array([np.percentile(withdraw[:, t], percentile) for t in range(1, year + 1)])
 
-    withdraw_mid = np.percentile(total_withdraw, 50)
-
-    return [failure_rate_transition, lower, upper, p_asset, withdraw_mid]
+    return [failure_rate_transition, lower, upper, p_asset, p_withdraw]
 
 funds = {
     "全世界株式（VT）": {"mu": 6.0, "sigma": 15.0},
@@ -184,15 +183,29 @@ if st.button("シミュレーション開始"):
         ax.fill_between(np.arange(year + 1), fst_asset_annual, np.zeros(year + 1), label="first asset", color="gray")
         ax.plot(p_asset[:, 2], label="upper 25%", color="red")
         ax.plot(p_asset[:, 1], label="median", color="green")
-        ax.plot(p_asset[:, 0], label="lower25%", color="blue")
+        ax.plot(p_asset[:, 0], label="lower 25%", color="blue")
 
-        ax.set_title("Inflation-adjusted asset transition")
+        ax.set_title("asset transition (inflation adjusted)")
         ax.set_xlabel("years")
-        ax.set_ylabel("asset(10,000 times)")
+        ax.set_ylabel("asset (10,000 times)")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
 
-        if option1 == "定率法":
-            st.text(f"総取り崩し額中央値:{int(withdraw_mid)}万円", help="インフレ（物価上昇）の影響を調整した値です")
-            st.text(f"総取り崩し額中央値年平均：{int(withdraw_mid / year)}万円", help="毎年の取り崩すお金の平均値です")
+        fig, ax = plt.subplots()
+        if option1 == "定額法":
+            annual = np.full(year, w) * ((1 + inflation)**np.arange(1, year + 1))
+            ax.fill_between(np.arange(1, year + 1), annual, np.zeros(year), label="fixed amount", color="gray")
+        else:
+            annual = np.fill(year, min_live_expense) * ((1 + inflation)**np.arange(1, year + 1))
+            ax.fill_between(np.arange(1, year + 1), annual, np.zeros(year), label="minimum living expense", color="gray")
+        ax.plot(p_withdraw[:, 2], label="upper 25%", color="red")
+        ax.plot(p_withdraw[:, 1], label="median", color="green")
+        ax.plot(p_withdraw[:, 0], label="lower 25%", color="blue")
+
+        ax.set_title("withdraw amount transition (inflation adjusted)")
+        ax.set_ylabel("withdraw amount (10,000 times)")
+        ax.set_xlabel("years")
+        ax.legend()
+        ax.grid(True)
+        st.pyplot(fig)
