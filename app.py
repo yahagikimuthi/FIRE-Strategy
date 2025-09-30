@@ -209,9 +209,6 @@ if st.button("シミュレーション開始"):
 
         ax.set_title("withdraw amount transition (inflation adjusted)")
         ax.set_ylabel("withdraw amount[10K]")
-        ax.set_ymin(0)
-        ax.set_xmin(0)
-        ax.set_ymax(year - 1)
         ax.set_xlabel("years")
         ax.legend()
         ax.grid(True)
