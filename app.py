@@ -113,7 +113,7 @@ st.text("")
 year = st.slider("取り崩し年数を選択してください", min_value=0, max_value=120, value=0)
 
 st.text("")
-option1 = st.radio("FIRE戦略を選択してください", ("定額法", "定率法"), horizontal=True)
+option1 = st.radio("取り崩し戦略を選択してください", ("定額法", "定率法"), horizontal=True)
 
 if option1=="定額法":
     st.text("")
