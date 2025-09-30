@@ -166,7 +166,7 @@ if st.button("シミュレーション開始"):
         lower = result[1]
         upper = result[2]
         p_asset = result[3]
-        withdraw_mid = result[4]
+        p_withdraw = result[4]
 
         failure_rate = failure_rate_transition[-1]
         fig, ax = plt.subplots()
